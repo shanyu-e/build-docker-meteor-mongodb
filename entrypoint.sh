@@ -8,6 +8,11 @@ set -e
 : ${APP_DIR:="/var/www"}
 : ${BRANCH:="master"}
 : ${APP_NAME:="dockmeteor"}
+: ${MONGO_URL:="mongodb://${MONGO_PORT_27017_TCP_ADDR}:${MONGO_PORT_27017_TCP_PORT}/${DB}"}
+: ${PORT:="80"}
+
+export MONGO_URL
+export PORT
 
 # If we are provided a GITHUB_DEPLOY_KEY (path), then
 # change it to the new, generic DEPLOY_KEY
@@ -28,8 +33,8 @@ ENDHERE
    fi
 fi
 
-mkdir -p /var/www
-cd /var/www
+mkdir -p ${APP_DIR}
+cd ${APP_DIR}
 
 if [ -n "${REPO}" ]; then
    echo "Getting ${REPO}..."
@@ -55,3 +60,8 @@ cd /var/www/${APP_NAME}
 exec meteor 
 meteor remove autopublish
 meteor remove insecure
+pkill -9 node
+meteor build --directory ${APP_DIR}
+tar xf bundle.tar.gz -C ${APP_DIR}
+cd ${APP_DIR}
+exec node ./main.js
