@@ -61,7 +61,9 @@ exec meteor
 meteor remove autopublish
 meteor remove insecure
 pkill -9 node
-meteor build --directory ${APP_DIR}
-tar xf bundle.tar.gz -C ${APP_DIR}
-cd ${APP_DIR}
+meteor build ${APP_DIR}/${APP_NAME}
+tar xf ${APP_DIR}/${APP_NAME}/{APP_NAME}.tar.gz -C ${APP_DIR}
+cd ${APP_DIR}/bundle/programs/server
+npm install
+cd ${APP_DIR}/bundle
 exec node ./main.js
